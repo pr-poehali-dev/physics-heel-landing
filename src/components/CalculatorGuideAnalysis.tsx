@@ -296,7 +296,16 @@ export function HeelGuideSection() {
                 {model.tag}
               </div>
 
-              <div className="text-5xl mb-5">{model.emoji}</div>
+              {model.image ? (
+                <img
+                  src={model.image}
+                  alt={model.name}
+                  className="w-full h-36 object-cover rounded-xl mb-5"
+                  style={{ objectPosition: "center" }}
+                />
+              ) : (
+                <div className="text-5xl mb-5">{model.emoji}</div>
+              )}
               <h3 className="font-display text-xl font-semibold mb-1">{model.name}</h3>
               <p className="text-[hsl(0,0%,45%)] text-xs font-body mb-5">
                 Высота: {model.height} · Площадь: {model.area} см²

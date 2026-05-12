@@ -46,7 +46,7 @@ export const HEEL_MODELS = [
     area: 54,
     pressure: 28,
     emoji: "👟",
-    image: null,
+    image: "https://cdn.poehali.dev/projects/261e28b1-bf79-45b2-b694-e4397fedc880/files/8b01f35f-dea9-4ce5-b8c7-f3de8d47acf5.jpg",
     color: "#a0c4b8",
     tag: "Лучший выбор",
   },

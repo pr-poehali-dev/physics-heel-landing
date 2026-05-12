@@ -25,15 +25,19 @@ export function CalculatorSection() {
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 150);
   };
 
-  const getDetailedComparison = (pressureKPa: number) => {
+  const getDetailedComparison = (_pressureKPa: number) => {
     const g = 9.8;
-    const forceOnHeel = weight * g * 0.25;
+    let loadShare = 0.50 - 0.038 * heelHeight;
+    if (loadShare < 0.08) loadShare = 0.08;
+    if (loadShare > 0.50) loadShare = 0.50;
+    const forceOnHeel = weight * g * loadShare;
     const areaM2 = area / 10000;
     const pressurePa = forceOnHeel / areaM2;
     const p = parseFloat((pressurePa / 1000).toFixed(1));
 
     const references = [
       { name: "Человек на лыжах", value: 5, emoji: "🎿" },
+      { name: "Человек стоя (две ноги)", value: 25, emoji: "🧍" },
       { name: "Гусеничный трактор", value: 60, emoji: "🚜" },
       { name: "Легковой автомобиль", value: 200, emoji: "🚗" },
       { name: "Слон (одна стопа)", value: 400, emoji: "🐘" },
@@ -62,7 +66,7 @@ export function CalculatorSection() {
       }
     }
 
-    return { p, sorted, message, comparisonLine };
+    return { p, loadShare, forceOnHeel, sorted, message, comparisonLine };
   };
 
   return (
@@ -212,16 +216,19 @@ export function CalculatorSection() {
               }}
             >
               <div className="font-mono font-light mb-1" style={{ fontSize: "clamp(3rem, 12vw, 5rem)", color: "hsl(345,60%,78%)" }}>
-                {getDetailedComparison(result).p.toFixed(1)}
+                {getDetailedComparison(result!).p.toFixed(1)}
               </div>
               <div className="font-body text-lg" style={{ color: "hsl(345,60%,78%,0.7)" }}>кПа</div>
             </div>
 
             {/* Detailed comparison block */}
             {(() => {
-              const { p, sorted, message, comparisonLine } = getDetailedComparison(result);
+              const { p, loadShare, forceOnHeel, sorted, message, comparisonLine } = getDetailedComparison(result);
               return (
                 <>
+                  <p className="font-body text-xs mb-4" style={{ color: "hsl(0,0%,45%)" }}>
+                    Нагрузка на пятку: {(loadShare * 100).toFixed(0)}% от веса тела, сила: {forceOnHeel.toFixed(0)} Н
+                  </p>
                   <p className="font-body font-semibold text-white mb-1">{message}</p>
                   <p className="font-body text-sm italic mb-6" style={{ color: "hsl(0,0%,60%)" }}>{comparisonLine}</p>
                   <p className="font-body font-semibold text-white mb-3">Шкала сравнения (давление в кПа):</p>
@@ -252,6 +259,21 @@ export function CalculatorSection() {
             })()}
           </div>
         )}
+
+        <div
+          className="mt-10 p-6 rounded-2xl"
+          style={{
+            border: "1px solid hsl(0,0%,16%)",
+            background: "hsl(0,0%,9%)",
+          }}
+        >
+          <p className="font-body text-sm font-semibold mb-3" style={{ color: "hsl(345,60%,78%)" }}>
+            Как работает калькулятор (уточнение расчётов)
+          </p>
+          <p className="font-body text-sm leading-relaxed" style={{ color: "hsl(0,0%,55%)" }}>
+            Калькулятор моделирует ситуацию «девушка стоит на одной ноге, перенеся на неё весь вес тела» — именно так проводился наш эксперимент. Поэтому рассчитанное значение — это давление под пяткой одной ноги. Эталоны в шкале (человек на лыжах, трактор, слон) приведены для своих типичных условий (например, человек стоит на двух ногах — 25 кПа). Сравнивать эти цифры абсолютно корректно, потому что все они — давление (сила, делённая на площадь), измеряются в одних и тех же единицах (кПа) и показывают, насколько концентрированной может быть нагрузка.
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -342,7 +364,7 @@ export function AnalysisSection() {
     { value: "28×", label: "Разница давления между шпилькой и танкеткой", icon: "TrendingUp" },
     { value: "809 кПа", label: "Максимальное давление — шпилька 10 см", icon: "Flame" },
     { value: "28 кПа", label: "Минимальное давление — танкетка 6.5 см", icon: "Leaf" },
-    { value: "5×", label: "Шпилька давит сильнее среднего слона", icon: "Zap" },
+    { value: "2×", label: "Шпилька давит сильнее среднего слона", icon: "Zap" },
   ];
 
   const sortedModels = [...HEEL_MODELS].sort((a, b) => b.pressure - a.pressure);

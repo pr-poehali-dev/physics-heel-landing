@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import Icon from "@/components/ui/icon";
-import { HEEL_MODELS, HEEL_PRESETS, COMPARISONS } from "@/components/data";
-import { getPressureComparison, getPressureBarPosition } from "@/components/helpers";
+import { HEEL_MODELS, HEEL_PRESETS } from "@/components/data";
 
 export function CalculatorSection() {
   const [weight, setWeight] = useState(55);
@@ -10,6 +9,7 @@ export function CalculatorSection() {
   const [presetIdx, setPresetIdx] = useState(0);
   const [result, setResult] = useState<number | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
+  const showResult = result !== null;
 
   const selectPreset = (idx: number) => {
     setPresetIdx(idx);
@@ -64,9 +64,6 @@ export function CalculatorSection() {
 
     return { p, sorted, message, comparisonLine };
   };
-
-  const comparison = result !== null ? getPressureComparison(result) : null;
-  const barPos = result !== null ? getPressureBarPosition(result) : 0;
 
   return (
     <section
@@ -195,7 +192,7 @@ export function CalculatorSection() {
         </div>
 
         {/* Result */}
-        {result !== null && comparison && (
+        {showResult && (
           <div
             ref={resultRef}
             className="mt-8 p-8 md:p-10 rounded-3xl"
@@ -206,93 +203,25 @@ export function CalculatorSection() {
               animation: "scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards",
             }}
           >
-            <div className="text-center mb-8">
-              <div className="font-mono font-light mb-2" style={{ fontSize: "clamp(3rem, 12vw, 6rem)", color: "hsl(345,60%,78%)" }}>
-                {result.toFixed(0)}
-              </div>
-              <div className="text-[hsl(0,0%,55%)] font-body text-lg">кПа</div>
-            </div>
-
+            {/* Pressure value */}
             <div
-              className="text-center mb-8 px-4 py-5 rounded-2xl"
+              className="text-center mb-8 px-4 py-6 rounded-2xl"
               style={{
                 background: "hsl(345,60%,78%,0.1)",
-                border: "1px solid hsl(345,60%,78%,0.2)",
+                border: "1px solid hsl(345,60%,78%,0.25)",
               }}
             >
-              <p className="font-display text-2xl md:text-3xl font-semibold" style={{ color: "hsl(345,60%,78%)" }}>
-                {comparison.phrase}
-              </p>
-            </div>
-
-            <p className="text-[hsl(0,0%,55%)] font-body text-sm leading-relaxed text-center mb-10">
-              {comparison.detail}
-            </p>
-
-            {/* Scale bar */}
-            <div className="mb-4">
-              <div className="flex justify-between items-end mb-2">
-                <span className="text-xs text-[hsl(0,0%,40%)] font-body">0 кПа</span>
-                <span className="text-xs text-[hsl(0,0%,40%)] font-body">900 кПа</span>
+              <div className="font-mono font-light mb-1" style={{ fontSize: "clamp(3rem, 12vw, 5rem)", color: "hsl(345,60%,78%)" }}>
+                {getDetailedComparison(result).p.toFixed(1)}
               </div>
-              <div className="relative h-3 rounded-full overflow-hidden" style={{ background: "hsl(0,0%,15%)" }}>
-                <div
-                  className="absolute inset-y-0 left-0 rounded-full transition-all duration-700"
-                  style={{
-                    width: `${barPos}%`,
-                    background: "linear-gradient(90deg, #8ecae6, #95d5b2, #f4a261, #e76f51, #e87f9f)",
-                  }}
-                />
-              </div>
-              <div className="relative mt-1" style={{ height: "20px" }}>
-                <div
-                  className="absolute -translate-x-1/2 transition-all duration-700"
-                  style={{ left: `${barPos}%` }}
-                >
-                  <div
-                    className="w-0 h-0 mx-auto"
-                    style={{
-                      borderLeft: "4px solid transparent",
-                      borderRight: "4px solid transparent",
-                      borderTop: "6px solid hsl(345,60%,78%)",
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Icons */}
-            <div className="grid grid-cols-5 gap-2 mt-6">
-              {COMPARISONS.map((c) => {
-                const isNearest = c.label === comparison.nearest.label;
-                return (
-                  <div
-                    key={c.label}
-                    className="flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all"
-                    style={{
-                      background: isNearest ? `${c.color}22` : "transparent",
-                      border: isNearest ? `1px solid ${c.color}66` : "1px solid transparent",
-                      transform: isNearest ? "scale(1.05)" : "scale(1)",
-                      opacity: isNearest ? 1 : 0.4,
-                    }}
-                  >
-                    <span className="text-2xl">{c.emoji}</span>
-                    <span className="text-xs font-body text-center leading-tight text-[hsl(0,0%,55%)]">
-                      {c.label}
-                    </span>
-                    <span className="text-xs font-mono" style={{ color: c.color }}>
-                      ~{c.kpa} кПа
-                    </span>
-                  </div>
-                );
-              })}
+              <div className="font-body text-lg" style={{ color: "hsl(345,60%,78%,0.7)" }}>кПа</div>
             </div>
 
             {/* Detailed comparison block */}
             {(() => {
               const { p, sorted, message, comparisonLine } = getDetailedComparison(result);
               return (
-                <div className="mt-8 pt-8" style={{ borderTop: "1px solid hsl(0,0%,18%)" }}>
+                <>
                   <p className="font-body font-semibold text-white mb-1">{message}</p>
                   <p className="font-body text-sm italic mb-6" style={{ color: "hsl(0,0%,60%)" }}>{comparisonLine}</p>
                   <p className="font-body font-semibold text-white mb-3">Шкала сравнения (давление в кПа):</p>
@@ -318,7 +247,7 @@ export function CalculatorSection() {
                       </div>
                     ))}
                   </div>
-                </div>
+                </>
               );
             })()}
           </div>

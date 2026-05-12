@@ -354,6 +354,104 @@ export function HeelGuideSection() {
             </div>
           ))}
         </div>
+
+        {/* Biomechanics article */}
+        <div className="mt-16 max-w-3xl mx-auto">
+          <h3 className="font-display text-2xl md:text-3xl font-light mb-6">
+            Почему высокий каблук опаснее: давление смещается на носок
+          </h3>
+
+          <p className="font-body text-base leading-relaxed mb-6" style={{ color: "hsl(0,0%,65%)" }}>
+            Многие думают, что опасность высокого каблука — только в давлении шпильки на пол. Но настоящая угроза для здоровья скрыта в другом: чем выше каблук, тем сильнее нагружается передняя часть стопы. Наш эксперимент доказал это цифрами.
+          </p>
+
+          <h4 className="font-display text-lg font-semibold mb-3 mt-8" style={{ color: "hsl(345,60%,78%)" }}>
+            Как меняется распределение веса
+          </h4>
+          <p className="font-body text-base leading-relaxed mb-4" style={{ color: "hsl(0,0%,65%)" }}>
+            Когда мы стоим босиком или в плоской обуви, вес тела делится поровну: примерно 50% на пятку, 50% на носок. Это естественная, безопасная поза. Но стоит приподнять пятку — и ситуация резко меняется.
+          </p>
+          <p className="font-body text-base leading-relaxed mb-8" style={{ color: "hsl(0,0%,65%)" }}>
+            Центр тяжести тела смещается вперёд. Чтобы не упасть, организм компенсирует это, перенося нагрузку на передний отдел стопы. Чем выше каблук, тем сильнее смещение и тем больше веса принимает на себя носок.
+          </p>
+
+          <h4 className="font-display text-lg font-semibold mb-4 mt-8" style={{ color: "hsl(345,60%,78%)" }}>
+            Цифры из нашего эксперимента
+          </h4>
+          <p className="font-body text-sm mb-4" style={{ color: "hsl(0,0%,55%)" }}>
+            Реальные данные для девушки весом 55 кг:
+          </p>
+          <div
+            className="rounded-2xl overflow-hidden mb-6"
+            style={{ border: "1px solid hsl(0,0%,16%)" }}
+          >
+            <table className="w-full font-body text-sm">
+              <thead>
+                <tr style={{ background: "hsl(0,0%,12%)" }}>
+                  <th className="text-left px-5 py-3 font-semibold" style={{ color: "hsl(345,60%,78%)" }}>Высота каблука</th>
+                  <th className="text-left px-5 py-3 font-semibold" style={{ color: "hsl(345,60%,78%)" }}>Нагрузка на носок</th>
+                  <th className="text-left px-5 py-3 font-semibold" style={{ color: "hsl(345,60%,78%)" }}>Нагрузка на пятку</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { heel: "0 см (плоская)", toe: "50% (≈27 кг)", back: "50% (≈27 кг)" },
+                  { heel: "7 см (широкий)", toe: "75% (≈41 кг)", back: "25% (≈14 кг)" },
+                  { heel: "10 см (шпилька)", toe: "88% (≈48 кг)", back: "12% (≈7 кг)" },
+                ].map((row, i) => (
+                  <tr key={i} style={{ background: i % 2 === 0 ? "hsl(0,0%,9%)" : "hsl(0,0%,11%)" }}>
+                    <td className="px-5 py-3" style={{ color: "hsl(0,0%,75%)" }}>{row.heel}</td>
+                    <td className="px-5 py-3" style={{ color: "hsl(0,0%,75%)" }}>{row.toe}</td>
+                    <td className="px-5 py-3" style={{ color: "hsl(0,0%,75%)" }}>{row.back}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="font-body text-sm leading-relaxed mb-8" style={{ color: "hsl(0,0%,55%)" }}>
+            На шпильке 10 см передняя часть стопы принимает на себя 88% всего веса тела — почти 50 кг. Именно это и объясняет жгучую боль в подушечках пальцев после нескольких часов в таких туфлях.
+          </p>
+
+          <h4 className="font-display text-lg font-semibold mb-4 mt-8" style={{ color: "hsl(345,60%,78%)" }}>
+            В чём опасность для здоровья
+          </h4>
+          <p className="font-body text-base leading-relaxed mb-4" style={{ color: "hsl(0,0%,65%)" }}>
+            Сверхнагрузка на носок — не просто дискомфорт. При длительном ношении высоких каблуков развиваются серьёзные проблемы:
+          </p>
+          <ul className="space-y-3 mb-6">
+            {[
+              { term: "Метатарзалгия", desc: "хроническая боль в переднем отделе стопы. Головки плюсневых костей испытывают давление, на которое не рассчитаны." },
+              { term: "Деформация поперечного свода", desc: "стопа «расплющивается», появляется выступающая «косточка» (hallux valgus)." },
+              { term: "Нарушение осанки", desc: "таз уходит вперёд, увеличивается поясничный прогиб, растёт нагрузка на межпозвонковые диски." },
+            ].map((item) => (
+              <li key={item.term} className="flex gap-3 font-body text-sm leading-relaxed" style={{ color: "hsl(0,0%,65%)" }}>
+                <span style={{ color: "hsl(345,60%,78%)" }}>·</span>
+                <span><span className="font-semibold text-white">{item.term}</span> — {item.desc}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="font-body text-sm leading-relaxed mb-8" style={{ color: "hsl(0,0%,55%)" }}>
+            Физический смысл прост: площадь опоры под носком тоже невелика (особенно в остроносых туфлях), поэтому давление там достигает значений, сопоставимых с давлением шпильки на пол.
+          </p>
+
+          <div
+            className="p-6 rounded-2xl"
+            style={{
+              border: "1px solid hsl(345,60%,78%,0.2)",
+              background: "hsl(345,60%,78%,0.05)",
+            }}
+          >
+            <h4 className="font-display text-lg font-semibold mb-3" style={{ color: "hsl(345,60%,78%)" }}>
+              Вывод
+            </h4>
+            <p className="font-body text-sm leading-relaxed mb-3" style={{ color: "hsl(0,0%,65%)" }}>
+              Наш калькулятор давления пятки — лишь половина картины. Он показывает, как шпилька воздействует на пол. Но главный урок проекта: настоящая опасность высокого каблука — не для паркета, а для самой девушки. С каждым сантиметром высоты носок забирает всё больше нагрузки, превращая красивую обувь в испытание для стоп и позвоночника.
+            </p>
+            <p className="font-body text-sm leading-relaxed" style={{ color: "hsl(0,0%,65%)" }}>
+              Именно поэтому мы рекомендуем выбирать каблук не выше 5–7 см, а на каждый день — удобную танкетку или толстый каблук с умеренной высотой. Данные эксперимента подтверждают этот совет цифрами.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
   );

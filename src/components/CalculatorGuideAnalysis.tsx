@@ -25,6 +25,46 @@ export function CalculatorSection() {
     setTimeout(() => resultRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 150);
   };
 
+  const getDetailedComparison = (pressureKPa: number) => {
+    const g = 9.8;
+    const forceOnHeel = weight * g * 0.25;
+    const areaM2 = area / 10000;
+    const pressurePa = forceOnHeel / areaM2;
+    const p = parseFloat((pressurePa / 1000).toFixed(1));
+
+    const references = [
+      { name: "Человек на лыжах", value: 5, emoji: "🎿" },
+      { name: "Гусеничный трактор", value: 60, emoji: "🚜" },
+      { name: "Легковой автомобиль", value: 200, emoji: "🚗" },
+      { name: "Слон (одна стопа)", value: 400, emoji: "🐘" },
+      { name: "Шпилька (из эксперимента)", value: 809, emoji: "👠" },
+    ];
+    const sorted = [...references].sort((a, b) => a.value - b.value);
+
+    let message = "";
+    let comparisonLine = "";
+    if (p > sorted[sorted.length - 1].value) {
+      const times = (p / sorted[sorted.length - 1].value).toFixed(1);
+      message = `Твоё давление в ${times} раза больше, чем у эталона «${sorted[sorted.length - 1].name}»!`;
+      comparisonLine = "💥 Экстремально! Превосходит все бытовые сравнения.";
+    } else if (p < sorted[0].value) {
+      message = `Твоё давление ниже, чем у «${sorted[0].name}». Очень комфортно!`;
+      comparisonLine = "✅ Безопасно для пола и стоп.";
+    } else {
+      for (let i = 1; i < sorted.length; i++) {
+        if (p <= sorted[i].value) {
+          const lower = sorted[i - 1];
+          const upper = sorted[i];
+          message = `Твоё давление (${p} кПа) находится между «${lower.name}» (${lower.value} кПа) и «${upper.name}» (${upper.value} кПа).`;
+          comparisonLine = `Примерно как ${lower.emoji} ... но чуть ближе к ${upper.emoji}`;
+          break;
+        }
+      }
+    }
+
+    return { p, sorted, message, comparisonLine };
+  };
+
   const comparison = result !== null ? getPressureComparison(result) : null;
   const barPos = result !== null ? getPressureBarPosition(result) : 0;
 
@@ -247,6 +287,40 @@ export function CalculatorSection() {
                 );
               })}
             </div>
+
+            {/* Detailed comparison block */}
+            {(() => {
+              const { p, sorted, message, comparisonLine } = getDetailedComparison(result);
+              return (
+                <div className="mt-8 pt-8" style={{ borderTop: "1px solid hsl(0,0%,18%)" }}>
+                  <p className="font-body font-semibold text-white mb-1">{message}</p>
+                  <p className="font-body text-sm italic mb-6" style={{ color: "hsl(0,0%,60%)" }}>{comparisonLine}</p>
+                  <p className="font-body font-semibold text-white mb-3">Шкала сравнения (давление в кПа):</p>
+                  <div className="space-y-3">
+                    {sorted.map((item) => (
+                      <div key={item.name} className="flex items-center gap-3">
+                        <span className="font-body text-sm shrink-0" style={{ width: "200px", color: "hsl(0,0%,75%)" }}>
+                          {item.emoji} {item.name}: {item.value} кПа
+                        </span>
+                        <div className="flex-1 h-5 rounded overflow-hidden" style={{ background: "#333" }}>
+                          <div
+                            style={{
+                              width: `${Math.min(100, (p / item.value) * 100)}%`,
+                              background: p > item.value ? "#ff4757" : "#2ed573",
+                              height: "100%",
+                              borderRadius: "4px",
+                            }}
+                          />
+                        </div>
+                        <span className="font-body text-xs shrink-0" style={{ color: p >= item.value ? "#ff4757" : "#2ed573" }}>
+                          ({p >= item.value ? "выше" : "ниже"})
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
